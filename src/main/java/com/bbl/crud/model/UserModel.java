@@ -54,7 +54,7 @@ public class UserModel {
     @NoArgsConstructor
     @Embeddable
     public static class Company {
-        private String name;
+        private String nameCompany;
         private String catchPhrase;
         private String bs;
     }

@@ -6,12 +6,16 @@ LABEL authors="krittamettanboontor"
 # Set working directory inside the container
 WORKDIR /app
 
-# Copy the Maven pom.xml and download dependencies first to leverage Docker cache
-COPY pom.xml ./
+# Clone the Git repository into the container
+RUN git clone https://github.com/Deathrow002/bbl_backend_crud.git .
+
+# Run Maven to download dependencies and build the application
 RUN mvn clean install -DskipTests
 
-# Copy the rest of the source code and build the application
-COPY src ./src
+# Print the contents of the target directory to check if the JAR file exists
+RUN ls -l /app/target/
+
+# Build the application
 RUN mvn package -DskipTests
 
 # Use OpenJDK 17 slim for running the application (runtime stage)

@@ -11,7 +11,7 @@
 	<groupId>com.bbl</groupId>
 	<artifactId>crud</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>Back-End API</name>
+	<name>crud</name>
 	<description>Back-End API of Spring Boot</description>
 	<url/>
 	<licenses>
@@ -52,6 +52,12 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-core</artifactId>
+			<version>5.2.0</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
