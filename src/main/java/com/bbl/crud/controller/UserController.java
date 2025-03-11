@@ -21,14 +21,41 @@ public class UserController {
     // Create User
     @PostMapping
     public ResponseEntity<UserDTO> createUser(@RequestBody UserDTO userDTO) {
-        UserModel user = new UserModel(userDTO.getId(), userDTO.getName(), userDTO.getUsername(),
-                userDTO.getEmail(), userDTO.getPhone(), userDTO.getWebsite(),
-                userDTO.getAddress() != null ? new UserModel.Address(userDTO.getAddress().getStreet(),
-                        userDTO.getAddress().getSuite(), userDTO.getAddress().getCity(), userDTO.getAddress().getZipcode(),
-                        new UserModel.Geo(userDTO.getAddress().getGeo().getLat(), userDTO.getAddress().getGeo().getLng())) : null,
-                userDTO.getCompany() != null ? new UserModel.Company(userDTO.getCompany().getNameCompany(),
-                        userDTO.getCompany().getCatchPhrase(), userDTO.getCompany().getBs()) : null);
+        // Create UserModel instance, setting the attributes based on the UserDTO
+        UserModel user = new UserModel();
+        user.setName(userDTO.getName());
+        user.setUsername(userDTO.getUsername());
+        user.setEmail(userDTO.getEmail());
+        user.setPhone(userDTO.getPhone());
+        user.setWebsite(userDTO.getWebsite());
 
+        // Handle Address mapping
+        if (userDTO.getAddress() != null) {
+            UserModel.Address address = new UserModel.Address();
+            address.setStreet(userDTO.getAddress().getStreet());
+            address.setSuite(userDTO.getAddress().getSuite());
+            address.setCity(userDTO.getAddress().getCity());
+            address.setZipcode(userDTO.getAddress().getZipcode());
+
+            if (userDTO.getAddress().getGeo() != null) {
+                UserModel.Geo geo = new UserModel.Geo();
+                geo.setLat(userDTO.getAddress().getGeo().getLat());
+                geo.setLng(userDTO.getAddress().getGeo().getLng());
+                address.setGeo(geo);
+            }
+            user.setAddress(address);
+        }
+
+        // Handle Company mapping
+        if (userDTO.getCompany() != null) {
+            UserModel.Company company = new UserModel.Company();
+            company.setNameCompany(userDTO.getCompany().getNameCompany());
+            company.setCatchPhrase(userDTO.getCompany().getCatchPhrase());
+            company.setBs(userDTO.getCompany().getBs());
+            user.setCompany(company);
+        }
+
+        // Save User
         UserModel savedUser = userService.saveUser(user);
         return ResponseEntity.ok(new UserDTO(savedUser));
     }
@@ -55,15 +82,47 @@ public class UserController {
     @PutMapping("/{id}")
     public ResponseEntity<UserDTO> updateUser(@PathVariable int id, @RequestBody UserDTO userDetails) {
         try {
-            UserModel updatedUser = userService.updateUser(id, new UserModel(userDetails.getId(), userDetails.getName(),
-                    userDetails.getUsername(), userDetails.getEmail(), userDetails.getPhone(), userDetails.getWebsite(),
-                    userDetails.getAddress() != null ? new UserModel.Address(userDetails.getAddress().getStreet(),
-                            userDetails.getAddress().getSuite(), userDetails.getAddress().getCity(),
-                            userDetails.getAddress().getZipcode(), new UserModel.Geo(userDetails.getAddress().getGeo().getLat(),
-                            userDetails.getAddress().getGeo().getLng())) : null,
-                    userDetails.getCompany() != null ? new UserModel.Company(userDetails.getCompany().getNameCompany(),
-                            userDetails.getCompany().getCatchPhrase(), userDetails.getCompany().getBs()) : null));
-            return ResponseEntity.ok(new UserDTO(updatedUser));
+            // Fetch user from DB and set updated fields
+            Optional<UserModel> existingUserOpt = userService.getUserById(id);
+            if (existingUserOpt.isPresent()) {
+                UserModel existingUser = existingUserOpt.get();
+
+                // Update attributes based on the provided UserDTO
+                existingUser.setName(userDetails.getName());
+                existingUser.setUsername(userDetails.getUsername());
+                existingUser.setEmail(userDetails.getEmail());
+                existingUser.setPhone(userDetails.getPhone());
+                existingUser.setWebsite(userDetails.getWebsite());
+
+                // Update Address
+                if (userDetails.getAddress() != null) {
+                    UserModel.Address address = existingUser.getAddress();
+                    address.setStreet(userDetails.getAddress().getStreet());
+                    address.setSuite(userDetails.getAddress().getSuite());
+                    address.setCity(userDetails.getAddress().getCity());
+                    address.setZipcode(userDetails.getAddress().getZipcode());
+
+                    if (userDetails.getAddress().getGeo() != null) {
+                        UserModel.Geo geo = address.getGeo();
+                        geo.setLat(userDetails.getAddress().getGeo().getLat());
+                        geo.setLng(userDetails.getAddress().getGeo().getLng());
+                    }
+                }
+
+                // Update Company
+                if (userDetails.getCompany() != null) {
+                    UserModel.Company company = existingUser.getCompany();
+                    company.setNameCompany(userDetails.getCompany().getNameCompany());
+                    company.setCatchPhrase(userDetails.getCompany().getCatchPhrase());
+                    company.setBs(userDetails.getCompany().getBs());
+                }
+
+                // Save updated user
+                UserModel updatedUser = userService.updateUser(id, existingUser);
+                return ResponseEntity.ok(new UserDTO(updatedUser));
+            } else {
+                return ResponseEntity.notFound().build();
+            }
         } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();
         }

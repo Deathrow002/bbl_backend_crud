@@ -36,6 +36,16 @@ public class UserModel {
     @Embedded
     private Company company;
 
+    public UserModel(String name, String username, String email, String phone, String website, Address address, Company company) {
+        this.name = name;
+        this.username = username;
+        this.email = email;
+        this.phone = phone;
+        this.website = website;
+        this.address = address;
+        this.company = company;
+    }
+
     @Data
     @AllArgsConstructor
     @NoArgsConstructor
