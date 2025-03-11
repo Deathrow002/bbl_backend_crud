@@ -12,10 +12,10 @@ RUN git clone https://github.com/Deathrow002/bbl_backend_crud.git .
 # Run Maven to download dependencies and build the application
 RUN mvn clean install -DskipTests
 
-# Print the contents of the target directory to check if the JAR file exists
+# Check if the JAR file is generated correctly
 RUN ls -l /app/target/
 
-# Build the application
+# Build the application and package it
 RUN mvn package -DskipTests
 
 # Use OpenJDK 17 slim for running the application (runtime stage)
@@ -25,7 +25,7 @@ FROM openjdk:17-jdk-slim
 WORKDIR /app
 
 # Copy the JAR file built by Maven from the build stage
-COPY --from=build /app/target/bbl-crud-0.0.1-SNAPSHOT.jar app.jar
+COPY --from=build /app/target/*.jar app.jar
 
 # Expose the application port
 EXPOSE 8080

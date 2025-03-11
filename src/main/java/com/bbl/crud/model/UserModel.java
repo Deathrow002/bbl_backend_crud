@@ -14,10 +14,20 @@ public class UserModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+
+    @Column(name = "name")
     private String name;
+
+    @Column(name = "username")
     private String username;
+
+    @Column(name = "email")
     private String email;
+
+    @Column(name = "phone")
     private String phone;
+
+    @Column(name = "website")
     private String website;
 
     @Embedded
@@ -31,9 +41,16 @@ public class UserModel {
     @NoArgsConstructor
     @Embeddable
     public static class Address {
+        @Column(name = "street")
         private String street;
+
+        @Column(name = "suite")
         private String suite;
+
+        @Column(name = "city")
         private String city;
+
+        @Column(name = "zipcode")
         private String zipcode;
 
         @Embedded
@@ -45,7 +62,10 @@ public class UserModel {
     @NoArgsConstructor
     @Embeddable
     public static class Geo {
+        @Column(name = "lat")
         private String lat;
+
+        @Column(name = "lng")
         private String lng;
     }
 
@@ -54,8 +74,13 @@ public class UserModel {
     @NoArgsConstructor
     @Embeddable
     public static class Company {
+        @Column(name = "company_name")
         private String nameCompany;
+
+        @Column(name = "company_catchphrase")
         private String catchPhrase;
+
+        @Column(name = "company_bs")
         private String bs;
     }
 }
