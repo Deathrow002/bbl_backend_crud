@@ -29,9 +29,9 @@ services:
       postgres:
         condition: service_healthy
     environment:
-      spring.datasource.url: jdbc:postgresql://postgres:5432/mydb
-      spring.datasource.username: postgres
-      spring.datasource.password: password
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/mydb
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: password
     networks:
       - app-network
 

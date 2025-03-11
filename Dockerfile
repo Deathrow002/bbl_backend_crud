@@ -5,10 +5,10 @@ LABEL authors="krittamettanboontor"
 
 WORKDIR /app
 
-RUN git clone https://github.com/Deathrow002/bbl_backend_crud.git .
+#RUN git clone https://github.com/Deathrow002/bbl_backend_crud.git .
 
-#COPY pom.xml .
-#COPY src /app/src
+COPY pom.xml .
+COPY src /app/src
 
 RUN mvn clean install -DskipTests
 
