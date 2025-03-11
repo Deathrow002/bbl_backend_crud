@@ -1,0 +1,8 @@
+com/bbl/crud/service/UserService.class
+com/bbl/crud/model/UserModel$Company.class
+com/bbl/crud/model/UserModel.class
+com/bbl/crud/repository/UserRepository.class
+com/bbl/crud/BackEndApiApplication.class
+com/bbl/crud/model/UserModel$Address.class
+com/bbl/crud/controller/UserController.class
+com/bbl/crud/model/UserModel$Geo.class
