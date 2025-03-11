@@ -10,8 +10,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -40,7 +38,7 @@ public class UserControllerTest {
 
 	@BeforeEach
 	public void setup() {
-		UserModel user = new UserModel(
+		user = new UserModel(
 				1,
 				"John Doe",
 				"johndoe",  // username
@@ -60,7 +58,6 @@ public class UserControllerTest {
 						"Building a better tomorrow"  // bs (business strategy)
 				)
 		);
-
 	}
 
 	@Test
@@ -107,7 +104,27 @@ public class UserControllerTest {
 
 	@Test
 	public void testUpdateUser() throws Exception {
-		UserModel updatedUser = new UserModel(1, "John Smith", "john.smith@example.com");
+		UserModel updatedUser = new UserModel(
+				1,
+				"John Smith",
+				"john.smith",  // username
+				"john.smith@example.com",  // email
+				"987-654-3210",  // phone
+				"johnsmith.com",  // website
+				new UserModel.Address(
+						"456 Elm St",  // street
+						"Apt 202",  // suite
+						"Another City",  // city
+						"67890",  // zipcode
+						new UserModel.Geo("40.7128", "-74.0060")  // geo coordinates
+				),
+				new UserModel.Company(
+						"Smith Inc.",  // company name
+						"Innovative Solutions",  // catchphrase
+						"Creating the future"  // bs (business strategy)
+				)
+		);
+
 		when(userService.updateUser(1, updatedUser)).thenReturn(updatedUser);
 
 		mockMvc.perform(MockMvcRequestBuilders
@@ -121,7 +138,27 @@ public class UserControllerTest {
 
 	@Test
 	public void testUpdateUser_NotFound() throws Exception {
-		UserModel updatedUser = new UserModel(1, "John Smith", "john.smith@example.com");
+		UserModel updatedUser = new UserModel(
+				1,
+				"John Smith",
+				"john.smith",  // username
+				"john.smith@example.com",  // email
+				"987-654-3210",  // phone
+				"johnsmith.com",  // website
+				new UserModel.Address(
+						"456 Elm St",  // street
+						"Apt 202",  // suite
+						"Another City",  // city
+						"67890",  // zipcode
+						new UserModel.Geo("40.7128", "-74.0060")  // geo coordinates
+				),
+				new UserModel.Company(
+						"Smith Inc.",  // company name
+						"Innovative Solutions",  // catchphrase
+						"Creating the future"  // bs (business strategy)
+				)
+		);
+
 		when(userService.updateUser(1, updatedUser)).thenThrow(new RuntimeException("User not found"));
 
 		mockMvc.perform(MockMvcRequestBuilders
@@ -133,6 +170,8 @@ public class UserControllerTest {
 
 	@Test
 	public void testDeleteUser() throws Exception {
+		Mockito.doNothing().when(userService).deleteUser(1);
+
 		mockMvc.perform(MockMvcRequestBuilders.delete("/api/users/1"))
 				.andExpect(status().isNoContent());
 	}
